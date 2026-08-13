@@ -1507,7 +1507,7 @@ def register_tools(api: Any) -> None:
     ) -> str:
         """Download (if URL) then import_asset into UEFN Content Browser. Listener required.
 
-        destination_path: project content path (e.g. /VideoTest/Meshy) or relative
+        destination_path: project content path (e.g. /MyProject/Meshy) or relative
         (e.g. Meshy/Props). Empty defaults to relative "Meshy" — listener pins to content_root.
         """
         try:

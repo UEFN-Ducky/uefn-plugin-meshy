@@ -6,8 +6,8 @@
 meshy_discover_search(query="wooden treasure chest", limit=8)
 # paste chat_links in chat — user previews on meshy.ai
 # if they pick one: they download FREE GLB/FBX in browser → local path:
-# FIRST: get_project_info() → content_root (e.g. /VideoTest/)
-meshy_import_to_uefn(url_or_path="C:/Users/.../chest.glb", destination_path="/VideoTest/Meshy/Props")
+# FIRST: get_project_info() → content_root (e.g. /MyProject/)
+meshy_import_to_uefn(url_or_path="C:/Users/.../chest.glb", destination_path="/MyProject/Meshy/Props")
 # or omit destination_path / pass "" → relative "Meshy" (listener pins)
 # only if they reject free matches:
 meshy_balance()
@@ -29,7 +29,7 @@ meshy_discover_search(query="stylized wooden treasure chest")
 meshy_balance()
 ducky_ask_user(… spend ~25 credits …)  # required every paid job
 meshy_text_to_3d(prompt="stylized wooden treasure chest, game prop", confirm_spend=true, wait=true)
-meshy_import_to_uefn(url_or_path="<glb url>", destination_path="/VideoTest/Meshy/Props")
+meshy_import_to_uefn(url_or_path="<glb url>", destination_path="/MyProject/Meshy/Props")
 ```
 
 ## Text → Blender cleanup
@@ -75,7 +75,7 @@ meshy_download(task_id="<anim id>", kind="animations")
 
 ```
 meshy_convert(input_task_id="<3d id>", target_formats="fbx", wait=true)
-meshy_import_to_uefn(url_or_path="<fbx url>", destination_path="/VideoTest/Meshy")
+meshy_import_to_uefn(url_or_path="<fbx url>", destination_path="/MyProject/Meshy")
 ```
 
 ## Local photo → 3D

@@ -1,9 +1,9 @@
 {
   "id": "meshy",
   "kind": "plugin",
-  "version": "1.0.13",
+  "version": "1.0.17",
   "label": "Meshy",
-  "description": "Meshy AI API — Discover free community models first, then text/image-to-3D, remesh/retexture/convert/resize, auto-rig, animate. Import into Blender or UEFN Content Browser.",
+  "description": "Meshy AI API \u2014 Discover free community models first, then text/image-to-3D, remesh/retexture/convert/resize, auto-rig, animate. Import into Blender or UEFN Content Browser.",
   "min_app_version": "1.0.0",
   "default_enabled": false,
   "secret_keys": [
@@ -23,16 +23,16 @@
         "tab": "Meshy",
         "id": "account",
         "title": "Meshy",
-        "description": "Paste your Meshy API key (from meshy.ai → Settings → API). Stored encrypted on this device. Powers meshy_* MCP tools for generate, remesh/retexture/convert, rig, animate, and import to Blender/UEFN.",
+        "description": "Paste your Meshy API key (from meshy.ai \u2192 Settings \u2192 API). Stored encrypted on this device. Powers meshy_* MCP tools for generate, remesh/retexture/convert, rig, animate, and import to Blender/UEFN.",
         "order": 10,
         "properties": [
           {
             "id": "meshy_api_key",
             "type": "secret",
             "label": "API key",
-            "placeholder": "msy_…",
+            "placeholder": "msy_\u2026",
             "testable": true,
-            "description": "Get a key at https://www.meshy.ai/settings/api — required for meshy_* tools (Pro+). Use Test to verify the key against Meshy."
+            "description": "Get a key at https://www.meshy.ai/settings/api \u2014 required for meshy_* tools (Pro+). Use Test to verify the key against Meshy."
           }
         ]
       }
@@ -46,14 +46,14 @@
         {
           "target": "settings.tab.meshy",
           "title": "Paste your API key",
-          "body": "Create a key at meshy.ai → Settings → API (msy_…), paste it here, then hit Test. Tools appear as meshy_* once this plugin is enabled. Do not run npx skills add meshy-dev/meshy-3d-agent — this plugin already ships the skill + MCP tools.",
+          "body": "Create a key at meshy.ai \u2192 Settings \u2192 API (msy_\u2026), paste it here, then hit Test. Tools appear as meshy_* once this plugin is enabled. Do not run npx skills add meshy-dev/meshy-3d-agent \u2014 this plugin already ships the skill + MCP tools.",
           "advance": "next",
           "mode": "rect"
         },
         {
           "target": "settings.tab.meshy",
           "title": "Generate, rig, import",
-          "body": "Agent checks Meshy Discover for FREE community models first (links in chat). Paid generate always asks via a panel question (ducky_ask_user) before confirm_spend. Land with meshy_import_to_uefn or meshy_import_to_blender. Characters: meshy_rig / animate → Blender skeletal_export.",
+          "body": "Agent checks Meshy Discover for FREE community models first (links in chat). Paid generate always asks via a panel question (ducky_ask_user) before confirm_spend. Land with meshy_import_to_uefn or meshy_import_to_blender. Characters: meshy_rig / animate \u2192 Blender skeletal_export.",
           "advance": "next"
         }
       ]

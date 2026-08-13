@@ -11,4 +11,8 @@ Install or update from **Settings → Store** in the app — do not install from
 py scripts/build_zip.py
 ```
 
-Writes `deploy/meshy-*.ducky-plugin.zip` (scripts/ and deploy/ are not packed).
+Writes `deploy/meshy-1.0.12.ducky-plugin.zip` (scripts/ and deploy/ are not packed).
+
+## Secrets
+
+Never commit tokens or keys. The app stores `meshy_api_key` locally (DPAPI), not in this package.

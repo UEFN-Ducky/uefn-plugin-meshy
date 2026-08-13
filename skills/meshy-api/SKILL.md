@@ -1,10 +1,10 @@
 ---
 name: meshy-api
 description: "Meshy AI via UEFN-Ducky MCP — Discover FREE community models first, then text/image-to-3D, remesh/retexture/convert/resize/UV, auto-rig, animate, download, import to Blender or UEFN. Async: submit → task_id → poll → download/import."
-license: All Rights Reserved
+license: Ducky Source-Available License v1.0
 metadata:
   label: Meshy
-  version: 7
+  version: 8
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
   allow_redistribute: false
@@ -35,7 +35,7 @@ Before any paid `meshy_*` generate / remesh / retexture / rig / animate:
 3. Prefer a free community match over spending credits. Ask: use this free model, or generate new?
 4. **FREE downloads only** — never spend generation credits to “get” a community model.
    - Meshy OpenAPI does **not** expose community GLB. User downloads GLB/FBX on the page while logged in (community download quota ≠ generation credits).
-   - Then `meshy_discover_download(local_path)` or `meshy_import_to_blender` / `meshy_import_to_uefn` with that path.
+   - Then `meshy_discover_download(url_or_path)` or `meshy_import_to_blender` / `meshy_import_to_uefn` with that path.
 5. Only after the user rejects free matches (or search is empty) may you propose a paid generate — then **always** `ducky_ask_user` before `confirm_spend=true`.
 
 ## Core pattern (all jobs are async)
@@ -80,7 +80,7 @@ Kinds for status/download: `text-to-3d`, `image-to-3d`, `multi-image-to-3d`, `te
 1. `meshy_discover_search` → show links; if user picks one → browser free download → import local path
 2. Else: `meshy_balance` → `ducky_ask_user` (spend yes/no + estimate) → only on approve: `meshy_text_to_3d` / `meshy_image_to_3d` (`confirm_spend=true`, `wait=true`)
 3. Optional: `meshy_convert(target_formats="fbx")` if you need FBX
-4. `meshy_import_to_uefn(url_or_path=<glb/fbx>, destination_path="/VideoTest/Meshy/Props")` — first `get_project_info()` for `content_root`; or omit / pass `""` (defaults to relative `Meshy`, listener pins)
+4. `meshy_import_to_uefn(url_or_path=<glb/fbx>, destination_path="/MyProject/Meshy/Props")` — first `get_project_info()` for `content_root`; or omit / pass `""` (defaults to relative `Meshy`, listener pins)
 5. Blender only if cleanup needed → **blender** skill `uefn_export` → `import_asset`
 
 ### Character → rig → animate → Blender → UEFN
