@@ -1,13 +1,13 @@
 ---
 name: meshy-api
 description: "Meshy AI via UEFN-Ducky MCP — Discover FREE community models first, then text/image-to-3D, remesh/retexture/convert/resize/UV, auto-rig, animate, download, import to Blender or UEFN. Async: submit → task_id → poll → download/import."
-license: Ducky Source-Available License v1.0
+license: MIT
 metadata:
   label: Meshy
   version: 8
   author: UEFN-Ducky
-  copyright: Copyright 2026 UEFN-Ducky
-  allow_redistribute: false
+  copyright: Copyright 2026 Mindful Path Company, LLC
+  allow_redistribute: true
   managed_by: uefn-ducky
   source_plugin_id: meshy
 ---
