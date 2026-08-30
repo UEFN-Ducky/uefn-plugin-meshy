@@ -11,7 +11,6 @@ import json
 import logging
 import re
 import tempfile
-import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -65,7 +64,13 @@ def _api_key() -> str:
 
 
 def encode_image(path: str) -> str:
-    """Local image path → data URI."""
+    """Local image path → data URI. Host conduit when running in the EXE."""
+    try:
+        from backend.util.http import encode_image as _encode_image
+
+        return _encode_image(path)
+    except ImportError:
+        pass
     p = Path(path)
     if not p.is_file():
         raise FileNotFoundError(f"image not found: {path}")
@@ -81,6 +86,12 @@ def encode_image(path: str) -> str:
 
 def resolve_image(image: str) -> str:
     """Pass through http(s)/data URIs; encode local paths."""
+    try:
+        from backend.util.http import resolve_image as _resolve_image
+
+        return _resolve_image(image)
+    except ImportError:
+        pass
     s = (image or "").strip()
     if not s:
         return ""
@@ -273,36 +284,25 @@ class MeshyClient:
         self.timeout = timeout
 
     def _request(self, method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from backend.util.http import HttpError, http_json
+
         url = f"{self.base_url}{path}"
-        data = None
-        headers = auth_header(self.api_key)
-        if payload is not None:
-            data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(url, data=data, headers=headers, method=method)
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                body = resp.read().decode("utf-8", "replace")
-        except urllib.error.HTTPError as exc:
-            detail_body = ""
-            try:
-                detail_body = exc.read().decode("utf-8", "replace")
-            except Exception:
-                pass
-            detail: Any = detail_body
-            try:
-                detail = json.loads(detail_body) if detail_body else {}
-            except (ValueError, TypeError):
-                pass
-            msg = _http_error_message(exc.code, detail)
-            raise MeshyError(msg, status=exc.code, detail=detail) from exc
-        except urllib.error.URLError as exc:
-            raise MeshyError(f"Meshy network error: {exc.reason}") from exc
-        if not body.strip():
-            return {}
-        try:
-            parsed = json.loads(body)
-        except json.JSONDecodeError as exc:
-            raise MeshyError(f"Meshy returned non-JSON: {body[:200]}") from exc
+            parsed = http_json(
+                method,
+                url,
+                headers=auth_header(self.api_key),
+                json_body=payload,
+                timeout=self.timeout,
+            )
+        except HttpError as exc:
+            if exc.status:
+                raise MeshyError(
+                    _http_error_message(exc.status, exc.detail),
+                    status=exc.status,
+                    detail=exc.detail,
+                ) from exc
+            raise MeshyError(f"Meshy {exc}", status=exc.status, detail=exc.detail) from exc
         if isinstance(parsed, dict):
             return parsed
         # Some list endpoints return arrays — wrap for callers that expect dict.
@@ -344,14 +344,20 @@ class MeshyClient:
         poll_interval: int = 5,
         max_attempts: int = 180,
     ) -> dict[str, Any]:
-        for _ in range(max_attempts):
-            result = self.status(kind, task_id)
-            if result["finished"] or result["failed"]:
-                return result
-            time.sleep(max(1, poll_interval))
-        raise MeshyError(
-            f"Task {task_id} did not finish within {max_attempts * poll_interval}s"
-        )
+        from backend.util.http import poll
+
+        try:
+            return poll(
+                lambda: self.status(kind, task_id),
+                done=lambda r: bool(r["finished"]),
+                failed=lambda r: bool(r["failed"]),
+                interval=poll_interval,
+                max_attempts=max_attempts,
+            )
+        except TimeoutError as exc:
+            raise MeshyError(
+                f"Task {task_id} did not finish within {max_attempts * poll_interval}s"
+            ) from exc
 
     def download_url(self, url: str, dest: Path) -> Path:
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -454,6 +460,9 @@ def test_api_key(api_key: str = "") -> dict[str, Any]:
         return {"ok": True, "detail": format_balance_detail(MeshyClient(api_key=key).balance())}
     except MeshyError as exc:
         return {"ok": False, "detail": str(exc)}
+
+
+test_api_key.__test__ = False  # Settings helper; pytest must not collect this
 
 
 def _default_download_dir(task_id: str) -> Path:

@@ -22,7 +22,7 @@ try:
         resolve_image,
         slugify_discover_query,
         sort_download_assets,
-        test_api_key,
+        test_api_key as check_api_key,
     )
 except ImportError:
     from meshy import (
@@ -40,7 +40,7 @@ except ImportError:
         resolve_image,
         slugify_discover_query,
         sort_download_assets,
-        test_api_key,
+        test_api_key as check_api_key,
     )
 
 
@@ -151,7 +151,7 @@ def test_format_balance_detail() -> None:
 
 
 def test_api_key_empty() -> None:
-    res = test_api_key("")
+    res = check_api_key("")
     assert res["ok"] is False
     assert "Paste" in res["detail"]
 
