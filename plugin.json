@@ -1,7 +1,7 @@
 {
   "id": "meshy",
   "kind": "plugin",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "label": "Meshy",
   "description": "Meshy AI API \u2014 Discover free community models first, then text/image-to-3D, remesh/retexture/convert/resize, auto-rig, animate. Import into Blender or UEFN Content Browser.",
   "min_app_version": "1.0.0",

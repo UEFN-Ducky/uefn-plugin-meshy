@@ -53,11 +53,13 @@ meshy_import_to_blender(url_or_path="<glb url>")
 ## Character → rig → walk → Blender
 
 ```
-meshy_text_to_image(prompt="stylized knight A-pose", pose_mode="a-pose", generate_multi_view=true, wait=true)
-meshy_image_to_3d(input_task_id="<img id>", wait=true)
+# Every line below is a PAID job: meshy_balance() → ducky_ask_user naming the whole
+# chain and its ~credit estimate → only then confirm_spend=true on each call.
+meshy_text_to_image(prompt="stylized knight A-pose", pose_mode="a-pose", generate_multi_view=true, confirm_spend=true, wait=true)
+meshy_image_to_3d(input_task_id="<img id>", confirm_spend=true, wait=true)
 # if face_count > 300000:
-meshy_remesh(input_task_id="<3d id>", target_polycount=100000, wait=true)
-meshy_rig(input_task_id="<textured or remesh id>", height_meters=1.8, wait=true)
+meshy_remesh(input_task_id="<3d id>", target_polycount=100000, confirm_spend=true, wait=true)
+meshy_rig(input_task_id="<textured or remesh id>", height_meters=1.8, confirm_spend=true, wait=true)
 # result.basic_animations.walking_fbx_url / running_fbx_url
 meshy_import_to_blender(url_or_path="<walking_fbx_url>")
 # blender skill skeletal_export → UEFN
@@ -66,27 +68,29 @@ meshy_import_to_blender(url_or_path="<walking_fbx_url>")
 ## Custom animation from library
 
 ```
-meshy_list_animations(query="punch", limit=20)
-meshy_animate(rig_task_id="<rig id>", action_id=92, wait=true)
+meshy_list_animations(query="punch", limit=20)          # free
+# ducky_ask_user for the animate spend first
+meshy_animate(rig_task_id="<rig id>", action_id=92, confirm_spend=true, wait=true)
 meshy_download(task_id="<anim id>", kind="animations")
 ```
 
 ## Convert to FBX for engine
 
 ```
-meshy_convert(input_task_id="<3d id>", target_formats="fbx", wait=true)
+meshy_convert(input_task_id="<3d id>", target_formats="fbx", confirm_spend=true, wait=true)   # paid → ask first
 meshy_import_to_uefn(url_or_path="<fbx url>", destination_path="/MyProject/Meshy")
 ```
 
 ## Local photo → 3D
 
 ```
-meshy_image_to_3d(image="C:/Users/me/refs/prop.png", wait=true)
+# paid: meshy_balance() → ducky_ask_user → then:
+meshy_image_to_3d(image="C:/Users/me/refs/prop.png", confirm_spend=true, wait=true)
 ```
 
 ## Preview then refine separately
 
 ```
-meshy_text_to_3d_preview(prompt="dragon egg", wait=true)
-meshy_text_to_3d_refine(preview_task_id="<preview id>", enable_pbr=true, wait=true)
+meshy_text_to_3d_preview(prompt="dragon egg", confirm_spend=true, wait=true)   # paid → ask first
+meshy_text_to_3d_refine(preview_task_id="<preview id>", enable_pbr=true, confirm_spend=true, wait=true)   # paid → ask first
 ```
