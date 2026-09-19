@@ -4,7 +4,7 @@ description: "Meshy AI via UEFN-Ducky MCP — Discover FREE community models fir
 license: MIT
 metadata:
   label: Meshy
-  version: 8
+  version: 9
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
   allow_redistribute: true
@@ -133,3 +133,7 @@ Load with MCP `skill_read_subskill("meshy-api", "<id>")`. Do **not** IDE-Read `~
 - `api_reference` [plugin]
 - `examples` [plugin]
 - `setup` [plugin]
+
+## Verify
+
+`meshy_status` / `get_static_mesh_info` after import.
