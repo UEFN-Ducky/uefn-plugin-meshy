@@ -1,3 +1,9 @@
+---
+description: "Meshy recipes: free community models first, text to textured GLB into UEFN, Blender cleanup, image to 3D, rig and walk a character, convert to FBX"
+metadata:
+  label: "Examples"
+---
+
 # Meshy examples
 
 ## Discover FREE community first (always)

@@ -852,7 +852,7 @@ def register_tools(api: Any) -> None:
 
     @api.tool(name="meshy_balance", intent=INTENT)
     def meshy_balance() -> str:
-        """Check Meshy credit balance."""
+        """Check how many Meshy credits are left before starting a paid job."""
         try:
             return _dumps(_client().balance())
         except MeshyError as exc:

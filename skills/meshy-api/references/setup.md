@@ -1,3 +1,9 @@
+---
+description: "Set up Meshy in UEFN Ducky: install and enable the plugin, paste and test the API key, opt in the tools, optional Blender and UEFN import"
+metadata:
+  label: "Setup"
+---
+
 # Meshy setup
 
 1. Store → Install **Meshy** → Enable.

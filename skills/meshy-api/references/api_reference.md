@@ -1,3 +1,9 @@
+---
+description: "Meshy API through the meshy_* tools: task kinds for status and download, text and image to 3D options, mesh ops, rigging and animation, image models, credits"
+metadata:
+  label: "API reference"
+---
+
 # Meshy API notes (via our tools)
 
 Base: `https://api.meshy.ai/openapi/` — Bearer `msy_…`.
