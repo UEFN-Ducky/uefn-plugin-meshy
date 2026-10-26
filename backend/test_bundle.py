@@ -50,6 +50,11 @@ def test_nodes_and_edges_are_wired():
                 assert e["source_pin"] and e["target_pin"], (key, e)
 
 
+def test_no_remove_background():
+    types = {n["type"] for wf in WORKFLOWS.values() for n in wf["graph"]["nodes"]}
+    assert "image.remove_bg" not in types
+
+
 def test_calls_point_at_bundle_keys():
     calls = [n["config"]["workflow_id"] for n in WORKFLOWS["character"]["graph"]["nodes"] if n["type"] == "workflow.call"]
     assert sorted(calls) == sorted(f"@{k}" for k in KEYS - {"character"})
@@ -72,6 +77,7 @@ def test_call_wires_match_callee_signature():
     assert pins("sheet", "flow.input", "inputs") == {"spec", "prompts"}
     assert pins("sheet", "flow.output", "outputs") == {"views"}
     assert pins("ship", "flow.input", "inputs") == {"spec", "meshes"}
+    assert pins("ship", "flow.output", "outputs") == {"assets", "mesh_path"}
 
 
 def test_quadruped_stops_before_paid_steps():

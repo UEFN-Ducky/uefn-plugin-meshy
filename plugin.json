@@ -174,7 +174,7 @@
               {
                 "key": "sheet",
                 "name": "Concept sheet",
-                "description": "Front, side and back views of the character (picture, edited views, background removed), checked by a vision model up to 3 times, then shown for you to approve. Returns views.",
+                "description": "Front, side and back views of the character (a picture and two edited views on a plain background), checked by a vision model up to 3 times, then shown for you to approve. Returns views.",
                 "folder": "",
                 "graph": {
                   "nodes": [
@@ -186,10 +186,8 @@
                     {"id": "gen", "type": "image.generate", "x": 600, "y": -200, "label": "Front view", "config": {"spend": true}},
                     {"id": "sd", "type": "image.edit", "x": 600, "y": 0, "label": "Side view", "config": {"spend": true}},
                     {"id": "bk", "type": "image.edit", "x": 600, "y": 200, "label": "Back view", "config": {"spend": true}},
-                    {"id": "rf", "type": "image.remove_bg", "x": 900, "y": -200, "label": "Front, cut out", "config": {"spend": true}},
-                    {"id": "rs", "type": "image.remove_bg", "x": 900, "y": 0, "label": "Side, cut out", "config": {"spend": true}},
-                    {"id": "rb", "type": "image.remove_bg", "x": 900, "y": 200, "label": "Back, cut out", "config": {"spend": true}},
                     {"id": "vw", "type": "list.make", "x": 1200, "y": 0, "label": "Views", "config": {"names": ["front", "side", "back"]}},
+                    {"id": "vx", "type": "logic.expression", "x": 1350, "y": 0, "label": "Views as pictures", "config": {"names": ["l"], "expression": "l"}},
                     {"id": "vq", "type": "input.text", "x": 1200, "y": 200, "label": "Check question", "config": {"value": "These are the front, side and back views of one game character on a plain background. Answer PASS only if all three show the same character (same design, colors, gear), each is a full body with nothing cut off, and each is a clean single figure. Otherwise answer FAIL and say in one sentence what is wrong."}},
                     {"id": "vis", "type": "llm.vision", "x": 1500, "y": 0, "label": "Vision check", "config": {}},
                     {"id": "ok", "type": "logic.expression", "x": 1800, "y": 0, "label": "Check passed", "config": {"names": ["a"], "expression": "contains(upper(a), 'PASS') && !contains(upper(a), 'FAIL')"}},
@@ -199,7 +197,7 @@
                     {"id": "pick", "type": "flow.choose", "x": 900, "y": 600, "label": "Approve the sheet", "config": {"title": "Concept sheet", "options": "Use this, Try again, Stop"}},
                     {"id": "okc", "type": "logic.expression", "x": 1200, "y": 600, "label": "You approved", "config": {"names": ["c"], "expression": "c == 'use'"}},
                     {"id": "gate", "type": "logic.if", "x": 600, "y": 800, "label": "Approved?", "config": {"expression": "passed"}},
-                    {"id": "ret", "type": "flow.output", "x": 900, "y": 800, "label": "Return", "config": {"outputs": [{"name": "views", "type": "json"}]}},
+                    {"id": "ret", "type": "flow.output", "x": 900, "y": 800, "label": "Return", "config": {"outputs": [{"name": "views", "type": "images"}]}},
                     {"id": "miss", "type": "notify.message", "x": 900, "y": 960, "label": "Not approved", "config": {"inputs": {"message": "Concept sheet: not approved after 6 sheets, so nothing was made in 3D."}}}
                   ],
                   "edges": [
@@ -220,21 +218,19 @@
                     {"source": "ps", "target": "sd", "kind": "data", "source_pin": "result", "target_pin": "prompt"},
                     {"source": "gen", "target": "bk", "kind": "data", "source_pin": "image", "target_pin": "image"},
                     {"source": "pb", "target": "bk", "kind": "data", "source_pin": "result", "target_pin": "prompt"},
-                    {"source": "gen", "target": "rf", "kind": "data", "source_pin": "image", "target_pin": "image"},
-                    {"source": "sd", "target": "rs", "kind": "data", "source_pin": "image", "target_pin": "image"},
-                    {"source": "bk", "target": "rb", "kind": "data", "source_pin": "image", "target_pin": "image"},
-                    {"source": "rf", "target": "vw", "kind": "data", "source_pin": "image", "target_pin": "front"},
-                    {"source": "rs", "target": "vw", "kind": "data", "source_pin": "image", "target_pin": "side"},
-                    {"source": "rb", "target": "vw", "kind": "data", "source_pin": "image", "target_pin": "back"},
-                    {"source": "vw", "target": "vis", "kind": "data", "source_pin": "list", "target_pin": "image"},
+                    {"source": "gen", "target": "vw", "kind": "data", "source_pin": "image", "target_pin": "front"},
+                    {"source": "sd", "target": "vw", "kind": "data", "source_pin": "image", "target_pin": "side"},
+                    {"source": "bk", "target": "vw", "kind": "data", "source_pin": "image", "target_pin": "back"},
+                    {"source": "vw", "target": "vx", "kind": "data", "source_pin": "list", "target_pin": "l"},
+                    {"source": "vx", "target": "vis", "kind": "data", "source_pin": "result", "target_pin": "image"},
                     {"source": "vq", "target": "vis", "kind": "data", "source_pin": "text", "target_pin": "prompt"},
                     {"source": "vis", "target": "ok", "kind": "data", "source_pin": "text", "target_pin": "a"},
                     {"source": "sn", "target": "msg", "kind": "data", "source_pin": "result", "target_pin": "name"},
                     {"source": "vis", "target": "msg", "kind": "data", "source_pin": "text", "target_pin": "verdict"},
-                    {"source": "vw", "target": "pick", "kind": "data", "source_pin": "list", "target_pin": "images"},
+                    {"source": "vx", "target": "pick", "kind": "data", "source_pin": "result", "target_pin": "images"},
                     {"source": "msg", "target": "pick", "kind": "data", "source_pin": "text", "target_pin": "message"},
                     {"source": "pick", "target": "okc", "kind": "data", "source_pin": "choice", "target_pin": "c"},
-                    {"source": "vw", "target": "ret", "kind": "data", "source_pin": "list", "target_pin": "views"}
+                    {"source": "vx", "target": "ret", "kind": "data", "source_pin": "result", "target_pin": "views"}
                   ]
                 }
               },
@@ -279,7 +275,7 @@
               {
                 "key": "rig",
                 "name": "Rig",
-                "description": "Meshy rig (humanoids), then the animations the spec asked for. Returns meshes: the rigged model first, then one per animation.",
+                "description": "Meshy rig (humanoids), then the animations the spec asked for. Returns meshes: one model per animation (idle first, then walk, …).",
                 "folder": "",
                 "graph": {
                   "nodes": [
@@ -291,7 +287,6 @@
                     {"id": "lib", "type": "tool.call", "x": 520, "y": 200, "label": "Meshy animation library", "config": {"name": "meshy_list_animations", "arguments_json": "{}"}},
                     {"id": "map", "type": "llm.ask", "x": 780, "y": 200, "label": "Animation ids", "config": {"system": "Reply with ONLY comma-separated numeric Meshy animation action ids from the library in Context that match the requested animation names, in the same order."}},
                     {"id": "an", "type": "mesh.animate", "x": 1040, "y": 0, "label": "Meshy animate", "config": {"backend": "meshy_animate"}},
-                    {"id": "ls", "type": "logic.expression", "x": 1300, "y": 0, "label": "Rigged model, then animations", "config": {"names": ["r", "m"], "expression": "[r].concat(m)"}},
                     {"id": "out", "type": "flow.output", "x": 1560, "y": 0, "config": {"outputs": [{"name": "meshes", "type": "json"}]}}
                   ],
                   "edges": [
@@ -307,9 +302,7 @@
                     {"source": "al", "target": "map", "kind": "data", "source_pin": "result", "target_pin": "prompt"},
                     {"source": "rg", "target": "an", "kind": "data", "source_pin": "mesh", "target_pin": "mesh"},
                     {"source": "map", "target": "an", "kind": "data", "source_pin": "text", "target_pin": "actions"},
-                    {"source": "rg", "target": "ls", "kind": "data", "source_pin": "mesh", "target_pin": "r"},
-                    {"source": "an", "target": "ls", "kind": "data", "source_pin": "meshes", "target_pin": "m"},
-                    {"source": "ls", "target": "out", "kind": "data", "source_pin": "result", "target_pin": "meshes"}
+                    {"source": "an", "target": "out", "kind": "data", "source_pin": "meshes", "target_pin": "meshes"}
                   ]
                 }
               },
@@ -337,7 +330,7 @@
               {
                 "key": "ship",
                 "name": "Ship to UEFN",
-                "description": "Opens the island (asks which if the spec has none), imports the rigged model and its animations into Characters/<Name>, then builds the character blueprint, animation preset and NPC definition. meshes = rigged model first, then idle, walk, … Returns assets.",
+                "description": "Opens the island (asks which if the spec has none), imports the rigged model and its animations into Characters/<Name>, then builds the character blueprint, animation preset and NPC definition. meshes = one model per animation from Rig (idle first, then walk, …). Returns assets and mesh_path.",
                 "folder": "",
                 "graph": {
                   "nodes": [
@@ -357,7 +350,7 @@
                     {"id": "ap", "type": "tool.call", "x": 2400, "y": 0, "label": "Animation preset", "config": {"name": "create_anim_preset", "arguments_json": "{\"name\": \"{{nodes.nm.result}}_Anim\", \"idle\": \"{{nodes.idl.result}}\", \"walk\": \"{{nodes.wk.result}}\", \"dest_folder\": \"{{nodes.dr.result}}\"}"}},
                     {"id": "npc", "type": "tool.call", "x": 2700, "y": 0, "label": "NPC definition", "config": {"name": "create_npc_character_definition", "arguments_json": "{\"name\": \"{{nodes.nm.result}}_NPC\", \"skeletal_mesh_path\": \"{{nodes.mp.result}}\", \"character_blueprint_path\": \"{{nodes.dr.result}}/{{nodes.nm.result}}_BP\", \"anim_preset_path\": \"{{nodes.dr.result}}/{{nodes.nm.result}}_Anim\", \"dest_folder\": \"{{nodes.dr.result}}\", \"max_health\": 100}"}},
                     {"id": "fail", "type": "notify.message", "x": 3000, "y": 0, "label": "Tell me if it fails", "config": {"on_fail": true, "inputs": {"message": "{{nodes.nm.result}} is in UEFN as an NPC definition."}}},
-                    {"id": "fin", "type": "pipeline.finish", "x": 3300, "y": 0, "label": "Done", "config": {"message": "{{nodes.nm.result}} is ready in UEFN: Characters/{{nodes.nm.result}}."}}
+                    {"id": "fin", "type": "flow.output", "x": 3300, "y": 0, "label": "Return", "config": {"outputs": [{"name": "assets", "type": "json"}, {"name": "mesh_path", "type": "text"}]}}
                   ],
                   "edges": [
                     {"source": "in", "target": "open", "kind": "main"},
@@ -382,7 +375,9 @@
                     {"source": "idl", "target": "info", "kind": "data", "source_pin": "result", "target_pin": "idle"},
                     {"source": "wk", "target": "info", "kind": "data", "source_pin": "result", "target_pin": "walk"},
                     {"source": "dr", "target": "info", "kind": "data", "source_pin": "result", "target_pin": "dir"},
-                    {"source": "info", "target": "note", "kind": "data", "source_pin": "text", "target_pin": "message"}
+                    {"source": "info", "target": "note", "kind": "data", "source_pin": "text", "target_pin": "message"},
+                    {"source": "imp", "target": "fin", "kind": "data", "source_pin": "assets", "target_pin": "assets"},
+                    {"source": "mp", "target": "fin", "kind": "data", "source_pin": "result", "target_pin": "mesh_path"}
                   ]
                 }
               }
