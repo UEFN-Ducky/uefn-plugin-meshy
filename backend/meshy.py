@@ -902,6 +902,24 @@ def register_tools(api: Any) -> None:
         except MeshyError as exc:
             return f"Error: {exc}"
 
+    @api.tool(name="meshy_list_tasks", intent=INTENT)
+    def meshy_list_tasks(kind: str = "text-to-3d", page_num: int = 1, page_size: int = 20) -> str:
+        """List your own Meshy tasks (newest first) for one kind: text-to-3d|image-to-3d|multi-image-to-3d|text-to-image|retexture|remesh|rigging|…. Free. Only API-made tasks; the meshy.ai web workspace is not exposed by the API."""
+        try:
+            tmpl = TASK_GET_PATHS.get(normalize_kind(kind))
+            if not tmpl:
+                return f"Error: unknown kind {kind!r}; use one of {sorted(TASK_GET_PATHS)}"
+            size = max(1, min(50, int(page_size or 20)))
+            path = f"{tmpl.replace('/{id}', '')}?page_num={max(1, int(page_num or 1))}&page_size={size}&sort_by=-created_at"
+            r = _client().get(path)
+            items = r.get("items", r.get("result", []))
+            # ponytail: trim to what's needed to pick a task; meshy_status has the full record
+            keep = ("id", "status", "prompt", "created_at", "thumbnail_url", "model_urls")
+            return _dumps({"kind": kind, "page_num": page_num, "count": len(items),
+                           "tasks": [{k: t.get(k) for k in keep if k in t} for t in items]})
+        except MeshyError as exc:
+            return f"Error: {exc}"
+
     @api.tool(name="meshy_download", intent=INTENT)
     def meshy_download(task_id: str, kind: str, output_dir: str = "") -> str:
         """Download assets for a SUCCEEDED task to output_dir (default temp folder)."""
